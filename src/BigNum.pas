@@ -79,14 +79,15 @@ var
 	i: integer;
 	sum: BigNumType;
 	buf: byte;
+	tmp: BigNumType; //don't forget to wipe out this
 begin
 	bignum_init(sum);
 	cf:=false;
 	af:=false;
+	buf:=0;
 	
 	if (a.positive xor b.positive) then
-	begin
-
+	begin	
 			//kai skirtingų ženklų
 	end
 	else
@@ -115,7 +116,23 @@ var
 	i: Integer;
 	res: BigNumType;
 begin
-
+	bignum_init(res);
+	carry := 0;
+	if (a.positive = a.positive) then
+	begin
+		for i := 1 to BIGNUM_DIGITS do
+		begin
+			res[i] := a[i] - b[i] - carry;
+			if res[i] < 0 then
+			begin
+				res[i] := 10 - res[i];
+				carry := 1;
+			end 
+			else
+				carry := 0;
+			
+		end;
+	end;
 end;
 
 initialization
