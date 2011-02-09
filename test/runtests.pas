@@ -21,7 +21,7 @@ program runtests;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, consoletestrunner, bignum;
+  Classes, consoletestrunner, BigNumTest;
   
 var
   App: TTestRunner;
