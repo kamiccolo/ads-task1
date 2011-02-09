@@ -19,7 +19,7 @@ type
 	function bignum_remainder(var a, b: BigNumType): BigNumType;
 }
 	
-	function bignum_add(var a, b: BigNumType): BigNumType;
+	function bignum_add(a, b: BigNumType): BigNumType;
 
 implementation
 
@@ -69,7 +69,7 @@ begin
 	bignum_fromstring := num;
 end;
 
-function bignum_add(var a, b: BigNumType): BigNumType;
+function bignum_add(a, b: BigNumType): BigNumType;
 var
 	cf, af: Boolean;
 	i: integer;

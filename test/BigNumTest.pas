@@ -70,6 +70,8 @@ begin
 	num := bignum_fromstring('5');
 	num2:=bignum_add(num, num);
 	AssertEquals('BigNum_add. Adding two positive integers. Sum below 999....99.',bignum_tostring(num2),'10');
+	AssertEquals('Adding two zeroes.', bignum_tostring(bignum_add(bignum_fromstring('0'), bignum_fromstring('0'))), '0');
+	AssertEquals('1+0 == 1.', bignum_tostring(bignum_add(bignum_fromstring('1'), bignum_fromstring('0'))), '1');
 end;
 
 initialization
