@@ -11,6 +11,8 @@ type
 	procedure bignum_init(var num: BigNumType);
 	
 	function bignum_tostring(var num: BigNumType): string;
+	
+	function bignum_add(var a, b: BigNumType): BigNumType;
 
 implementation
 
@@ -41,6 +43,42 @@ begin
 		end;
 	end;
 	bignum_tostring := res;
+end;
+
+function bignum_add(var a, b: BigNumType): BigNumType;
+var
+	cf, af: Boolean;
+	i: integer;
+	sum: BigNumType;
+	buf: byte;
+begin
+	bignum_init(sum);
+	cf:=false;
+	af:=false;
+	
+	if (a.positive xor b.positive) then
+	begin
+
+			//kai skirtingų ženklų
+	end
+	else
+	begin
+		for i:=1 to 256 do
+		begin
+			buf:=a.data[i]+b.data[i];
+			if (af=true) then
+			begin
+				buf:=buf+1;
+				af:=false;
+			end;
+			if (buf>9) then af:=true;
+			sum.data[i]:=buf mod 10;
+		end;
+		sum.positive:=a.positive;
+		//vienodais ženklais - suma, bet ženklo nekeičia
+	end;
+	
+	bignum_add:=sum;
 end;
 
 initialization
