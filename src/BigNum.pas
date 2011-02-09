@@ -75,14 +75,15 @@ var
 	i: integer;
 	sum: BigNumType;
 	buf: byte;
+	tmp: BigNumType; //don't forget to wipe out this
 begin
 	bignum_init(sum);
 	cf:=false;
 	af:=false;
+	buf:=0;
 	
 	if (a.positive xor b.positive) then
-	begin
-
+	begin	
 			//kai skirtingų ženklų
 	end
 	else
