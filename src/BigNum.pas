@@ -16,10 +16,10 @@ type
 	function bignum_tostring(num: BigNumType): string;
 	function bignum_fromstring(str: string): BigNumType;
 
-	function bignum_substract(var a, b: BigNumType): BigNumType;
+	function bignum_subtract(a, b: BigNumType): BigNumType;
 {	
-	function bignum_divide(var a, b: BigNumType): BigNumType;
-	function bignum_remainder(var a, b: BigNumType): BigNumType;
+	function bignum_divide(a, b: BigNumType): BigNumType;
+	function bignum_remainder(a, b: BigNumType): BigNumType;
 }
 	
 	function bignum_add(a, b: BigNumType): BigNumType;
@@ -66,7 +66,7 @@ begin
 		begin
 			if (str[i] >= '0') and (str[i] <= '9') then
 				num.data[length(str) - i + 1] := ord(str[i]) - ord('0')
-			else
+			else (if str[i] = '-') then
 				num.data[length(str) - i + 1] := 0;
 		end;
 	
@@ -109,8 +109,11 @@ begin
 	bignum_add:=sum;
 end;
 
-function bignum_substract(var a, b: BigNumType): BigNumType;
-
+function bignum_subtract(a, b: BigNumType): BigNumType;
+var
+	carry: Byte;
+	i: Integer;
+	res: BigNumType;
 begin
 
 end;
