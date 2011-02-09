@@ -2,9 +2,12 @@ unit BigNum;
 
 interface
 
+const
+	BIGNUM_DIGITS = 256;
+
 type
 	BigNumType = record
-		data: array [1..256] of Byte; // or some arbitrary large number
+		data: array [1..BIGNUM_DIGITS] of Byte; // or some arbitrary large number
 		positive: Boolean;
 	end;
 	
@@ -12,9 +15,9 @@ type
 	
 	function bignum_tostring(num: BigNumType): string;
 	function bignum_fromstring(str: string): BigNumType;
-{	
+
 	function bignum_substract(var a, b: BigNumType): BigNumType;
-	
+{	
 	function bignum_divide(var a, b: BigNumType): BigNumType;
 	function bignum_remainder(var a, b: BigNumType): BigNumType;
 }
@@ -27,7 +30,7 @@ procedure bignum_init(var num: BigNumType);
 var
 	i: Integer;
 begin
-	for i := 1 to 256 do
+	for i := 1 to BIGNUM_DIGITS do
 		num.data[i] := 0;
 		num.positive := true;
 end;
@@ -40,7 +43,7 @@ var
 begin
 	found_num := false;
 	res := '';
-	for i := 256 downto 1 do 
+	for i := BIGNUM_DIGITS downto 1 do 
 	begin
 		if (not found_num) and (num.data[i] <> 0) then
 			found_num := true;
@@ -58,13 +61,14 @@ var
 	num: BigNumType;
 begin
 	bignum_init(num);
-	for i := length(str) downto 1 do
-	begin
-		if (str[i] >= '0') and (str[i] <= '9') then
-			num.data[length(str) - i + 1] := ord(str[i]) - ord('0')
-		else
-			num.data[length(str) - i + 1] := 0;
-	end;
+	if length(str) <= BIGNUM_DIGITS then
+		for i := length(str) downto 1 do
+		begin
+			if (str[i] >= '0') and (str[i] <= '9') then
+				num.data[length(str) - i + 1] := ord(str[i]) - ord('0')
+			else
+				num.data[length(str) - i + 1] := 0;
+		end;
 	
 	bignum_fromstring := num;
 end;
@@ -103,6 +107,12 @@ begin
 	end;
 	
 	bignum_add:=sum;
+end;
+
+function bignum_substract(var a, b: BigNumType): BigNumType;
+
+begin
+
 end;
 
 initialization

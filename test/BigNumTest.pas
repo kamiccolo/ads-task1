@@ -54,7 +54,10 @@ var
 	num: BigNumType;
 begin
 	num := bignum_fromstring('1');
-	AssertEquals('Medium length string test', bignum_tostring(num), '1');
+	
+	AssertEquals('1!', bignum_tostring(bignum_fromstring('1')), '1');
+	AssertEquals('0!', bignum_tostring(bignum_fromstring('0')), '0');
+	AssertEquals('passing empty string should yield zero', bignum_tostring(bignum_fromstring('')), '0');
 	num := bignum_fromstring('1232112423');
 	AssertEquals('Medium length string test', bignum_tostring(num), '1232112423');
 	num := bignum_fromstring('0000');
@@ -70,8 +73,10 @@ begin
 	num := bignum_fromstring('5');
 	num2:=bignum_add(num, num);
 	AssertEquals('BigNum_add. Adding two positive integers. Sum below 999....99.',bignum_tostring(num2),'10');
-	AssertEquals('Adding two zeroes.', bignum_tostring(bignum_add(bignum_fromstring('0'), bignum_fromstring('0'))), '0');
+	AssertEquals('0+0 == 0', bignum_tostring(bignum_add(bignum_fromstring('0'), bignum_fromstring('0'))), '0');
 	AssertEquals('1+0 == 1.', bignum_tostring(bignum_add(bignum_fromstring('1'), bignum_fromstring('0'))), '1');
+	AssertEquals('1+0 == 1.', bignum_tostring(bignum_add(bignum_fromstring('1'), bignum_fromstring('0'))), '1');
+	AssertEquals('<Hugenum> + <Hugenum>.', bignum_tostring(bignum_add(bignum_fromstring('9999999999999999999999999999999999999999999'), bignum_fromstring('99999999999999999999999999999999999999999991'))), '109999999999999999999999999999999999999999990');
 end;
 
 initialization
