@@ -11,23 +11,18 @@ type
 		Procedure InitTest;
 		Procedure ToStringTest;
 		Procedure FromStringTest;
+		Procedure AdditionTest;
 	end;
 	
 implementation
 
 Procedure BigNumTestCase.InitTest;
 var
-	num, num2, num3: BigNumType;
+	num: BigNumType;
 begin
 	bignum_init(num);
 	AssertEquals('BigNum should be initialized to zero.',bignum_tostring(num),'0');
 	AssertEquals('BigNumType.positive should be initialized to 1.',num.positive,true);
-	
-	num.data[1]:=5;
-	num2:=bignum_add(num, num);
-	AssertEquals('BigNum_add. Adding two positive integers. Sum below 999....99.',bignum_tostring(num2),'10');
-	
-
 	
 end;
 
@@ -66,7 +61,15 @@ begin
 	AssertEquals('Bunch of zeroes test.', bignum_tostring(num), '0');
 	num := bignum_fromstring('2132132001223232132111123213213211');
 	AssertEquals('Number with a zero in the middle', bignum_tostring(num), '2132132001223232132111123213213211');
-	
+end;
+
+Procedure BigNumTestCase.AdditionTest;
+var
+	num, num2: BigNumType;
+begin
+	num := bignum_fromstring('5');
+	num2:=bignum_add(num, num);
+	AssertEquals('BigNum_add. Adding two positive integers. Sum below 999....99.',bignum_tostring(num2),'10');
 end;
 
 initialization

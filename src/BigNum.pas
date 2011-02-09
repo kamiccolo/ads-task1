@@ -10,22 +10,17 @@ type
 	
 	procedure bignum_init(var num: BigNumType);
 	
-<<<<<<< HEAD
 	function bignum_tostring(num: BigNumType): string;
 	function bignum_fromstring(str: string): BigNumType;
 {	
-	function bignum_add(var a, b: BigNumType): BigNumType;
 	function bignum_substract(var a, b: BigNumType): BigNumType;
 	
 	function bignum_divide(var a, b: BigNumType): BigNumType;
 	function bignum_remainder(var a, b: BigNumType): BigNumType;
 }
-=======
-	function bignum_tostring(var num: BigNumType): string;
 	
 	function bignum_add(var a, b: BigNumType): BigNumType;
 
->>>>>>> 8a85925287f6dd7b50bdd9d29e4a4dee1fd44de1
 implementation
 
 procedure bignum_init(var num: BigNumType);
