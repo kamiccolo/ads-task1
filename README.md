@@ -2,7 +2,7 @@
 Omg, mom, can u read this?
 
 ## Building tests
-    fpc -Fu./src test/testrunner.pas
+    fpc -Fu./src test/runtests.pas
 	
 ## Running tests
-	test/testrunner -a (or something similar, requires -a/--all option)
+	test/runtests -a (or something similar, slashes OS dependant, requires -a/--all option)
