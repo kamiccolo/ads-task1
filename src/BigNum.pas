@@ -10,22 +10,9 @@ type
 	
 	procedure bignum_init(var num: BigNumType);
 	
-<<<<<<< HEAD
 	function bignum_tostring(num: BigNumType): string;
 	function bignum_fromstring(str: string): BigNumType;
-{	
-	function bignum_add(var a, b: BigNumType): BigNumType;
-	function bignum_substract(var a, b: BigNumType): BigNumType;
-	
-	function bignum_divide(var a, b: BigNumType): BigNumType;
-	function bignum_remainder(var a, b: BigNumType): BigNumType;
-}
-=======
-	function bignum_tostring(var num: BigNumType): string;
-	
-	function bignum_add(var a, b: BigNumType): BigNumType;
 
->>>>>>> 8a85925287f6dd7b50bdd9d29e4a4dee1fd44de1
 implementation
 
 procedure bignum_init(var num: BigNumType);
@@ -57,7 +44,6 @@ begin
 	bignum_tostring := res;
 end;
 
-<<<<<<< HEAD
 function bignum_fromstring(str: string): BigNumType;
 var
 	i: Integer;
@@ -74,61 +60,6 @@ begin
 	
 	bignum_fromstring := num;
 end;
-
-{function bignum_substract(var a, b: BigNumType): BigNumType;
-var
-	carry: Byte;
-	res: BigNumType;
-begin
-	carry := -1;
-	bignum_init(res);
-	for i := length(str) downto 1 do
-	begin
-		if (str[i] >= '0') and (str[i] <= '9') then
-			num.data[length(str) - i + 1] := ord(str[i]) - ord('0')
-		else
-			num.data[length(str) - i + 1] := 0;
-	end;
-	
-	bignum_substract := num;
-end;}
-=======
-function bignum_add(var a, b: BigNumType): BigNumType;
-var
-	cf, af: Boolean;
-	i: integer;
-	sum: BigNumType;
-	buf: byte;
-begin
-	bignum_init(sum);
-	cf:=false;
-	af:=false;
-	
-	if (a.positive xor b.positive) then
-	begin
-
-			//kai skirtingų ženklų
-	end
-	else
-	begin
-		for i:=1 to 256 do
-		begin
-			buf:=a.data[i]+b.data[i];
-			if (af=true) then
-			begin
-				buf:=buf+1;
-				af:=false;
-			end;
-			if (buf>9) then af:=true;
-			sum.data[i]:=buf mod 10;
-		end;
-		sum.positive:=a.positive;
-		//vienodais ženklais - suma, bet ženklo nekeičia
-	end;
-	
-	bignum_add:=sum;
-end;
->>>>>>> 8a85925287f6dd7b50bdd9d29e4a4dee1fd44de1
 
 initialization
 
