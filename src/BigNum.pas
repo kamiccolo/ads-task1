@@ -43,8 +43,10 @@ var
 begin
 	found_num := false;
 	res := '';
+
 	for i := BIGNUM_DIGITS downto 1 do 
-	begin
+	begintmp:=a;
+
 		if (not found_num) and (num.data[i] <> 0) then
 			found_num := true;
 		if (found_num) or (i = 1) then
@@ -85,19 +87,68 @@ var
 	i: integer;
 	sum: BigNumType;
 	buf: byte;
-	tmp: BigNumType; //don't forget to wipe out this
+	tmp: BigNumType;
 begin
 	bignum_init(sum);
-	cf:=false;
+	cf:=false;  //not used
 	af:=false;
 	buf:=0;
 	
 	if (a.positive xor b.positive) then
-	begin	
-			//kai skirtingų ženklų
+	begin  //adding numbers with different signs
+		tmp:=a;
+		if(a.positive=false) then  //let a be positive number and b - negative
+		begin
+			a:=b;
+			b:=tmp;
+		end;
+		
+		for i:=1 to 256 do
+			begin
+			if (i<>1) then
+			begin
+				if (af) then
+				begin
+					if (a.data[i]=0) then  //borrowing from zero
+					begin
+						af:=true;
+						a.data[i]:=9;
+					end
+					else
+					begin
+						a.data[i]:=a.data[i]-1;  //still no need to borrow
+						af:=false;
+					end;
+				end;
+			end;
+			
+			if (a.data[i]<b.data[i]) then
+			begin
+				sum.data[i]:=a.data[i]+10-b.data[i];
+				af:=true;
+			end
+			else
+			begin
+				sum.data[i]:=a.data[i]-b.data[i];
+				//af:=false;
+			end;
+		end;
+		sum.positive:=true;
+		
+		
+		if (af) then  //negative number!
+		begin
+			a:=b;
+			b:=tmp;
+			a.positive:=true;
+			b.positive:=false;
+			
+			sum:=bignum_add(a, b);
+			sum.positive:=false;
+		end;	        
 	end
 	else
-	begin
+	begin  //adding numbers with same signs
 		for i:=1 to 256 do
 		begin
 			buf:=a.data[i]+b.data[i];
@@ -110,7 +161,6 @@ begin
 			sum.data[i]:=buf mod 10;
 		end;
 		sum.positive:=a.positive;
-		//vienodais ženklais - suma, bet ženklo nekeičia
 	end;
 	
 	bignum_add:=sum;
