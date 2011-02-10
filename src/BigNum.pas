@@ -1,5 +1,4 @@
 unit BigNum;
-
 interface
 
 type
@@ -13,10 +12,12 @@ type
 	function bignum_tostring(num: BigNumType): string;
 	function bignum_fromstring(str: string): BigNumType;
 {	
-	function bignum_substract(var a, b: BigNumType): BigNumType;
+	function bignum_substract(a, b: BigNumType): BigNumType;
 	
-	function bignum_divide(var a, b: BigNumType): BigNumType;
-	function bignum_remainder(var a, b: BigNumType): BigNumType;
+	function bignum_divide(a, b: BigNumType): BigNumType;
+	function bignum_remainder(a, b: BigNumType): BigNumType;
+	
+	function bignum_multiply(a, b: BigNumType): BigNumType;
 }
 	
 	function bignum_add(a, b: BigNumType): BigNumType;
@@ -41,7 +42,7 @@ begin
 	found_num := false;
 	res := '';
 	for i := 256 downto 1 do 
-	begintmp:=a;
+	begin
 		if (not found_num) and (num.data[i] <> 0) then
 			found_num := true;
 		if (found_num) or (i = 1) then
@@ -124,7 +125,7 @@ begin
 		sum.positive:=true;
 		
 		
-		if (af) then  //negative number!
+		if (af) then  //Houston,negative number!
 		begin
 			a:=b;
 			b:=tmp;
