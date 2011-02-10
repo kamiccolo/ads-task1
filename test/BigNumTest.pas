@@ -65,6 +65,7 @@ end;
 Procedure BigNumTestCase.FromStringTest;
 var
 	num: BigNumType;
+	s1: string;
 begin
 	num := bignum_fromstring('1');
 	
@@ -81,6 +82,10 @@ begin
 	AssertEquals('Tostring-fromstring with negative numbers.','-5',bignum_tostring(num));
 	AssertEquals('negative large number', bignum_tostring(bignum_fromstring('-2134343578439758437589743957439578437598437574385743957843')), '-2134343578439758437589743957439578437598437574385743957843');
 	// TODO proper tests for limits
+	
+	// 254x '9'
+	s1 := '99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999';
+	AssertEquals('254 digits', s1, bignum_tostring(bignum_fromstring(s1)));
 end;
 
 Procedure BigNumTestCase.AdditionTest;
@@ -93,7 +98,7 @@ begin
 	AssertEquals('BigNum_add. Adding two positive integers. Sum below 999....99.','10', bignum_tostring(num2));
 	AssertEquals('0+0 == 0', '0', bignum_tostring(bignum_add(bignum_fromstring('0'), bignum_fromstring('0'))));
 	AssertEquals('1+0 == 1.', '1', bignum_tostring(bignum_add(bignum_fromstring('1'), bignum_fromstring('0'))));
-	AssertEquals('1+0 == 1.', '1', bignum_tostring(bignum_add(bignum_fromstring('1'), bignum_fromstring('0'))));
+	AssertEquals('9+1 == 10.', '10', bignum_tostring(bignum_add(bignum_fromstring('9'), bignum_fromstring('1'))));
 	for i:=1 to BIGNUM_DIGITS do num.data[i]:=9;
 	num2:=bignum_fromstring('1');
 	AssertEquals('Adding biggest possible number with 1, (causing an overflow).','0',bignum_tostring(bignum_add(num, num2)));
@@ -107,21 +112,29 @@ begin
 	num.positive:=false;
 	num2:=bignum_fromstring('3');
 	AssertEquals('Adding positive and negative numbers. Part 2.','-2',bignum_tostring(bignum_add(num2, num)));
-	num2:=bignum_fromstring('8');
-	AssertEquals('Adding positive and negative numbers. Part 3.','-3',bignum_tostring(bignum_add(num2, num)));
+	AssertEquals('Adding positive and negative numbers. Part 3.','-3',bignum_tostring(bignum_add(bignum_fromstring('5'), bignum_fromstring('-8'))));
 	
 	AssertEquals('<Hugenum> + <Hugenum>.', '109999999999999999999999999999999999999999990', bignum_tostring(bignum_add(bignum_fromstring('9999999999999999999999999999999999999999999'), bignum_fromstring('99999999999999999999999999999999999999999991'))));
 end;
 
 Procedure BigNumTestCase.SubtractionTest;
 var
-	num: BigNumType;
+	num, num2: BigNumType;
 begin
 	AssertEquals('1 - 1 == 0', '0', bignum_tostring(bignum_subtract(bignum_fromstring('1'), bignum_fromstring('1'))));
 	AssertEquals('(-1) - (-1) == 0', '0', bignum_tostring(bignum_subtract(bignum_fromstring('-1'), bignum_fromstring('-1'))));
 	AssertEquals('2 - 1 == 1', '1', bignum_tostring(bignum_subtract(bignum_fromstring('2'), bignum_fromstring('1'))));
 	AssertEquals('digit carry test: 10 - 1 == 9', '9', bignum_tostring(bignum_subtract(bignum_fromstring('10'), bignum_fromstring('1'))));
 	AssertEquals('global carry 2 - 3 == -1', '-1', bignum_tostring(bignum_subtract(bignum_fromstring('2'), bignum_fromstring('3'))));
+	AssertEquals('10 - 11 == -1', '-1', bignum_tostring(bignum_subtract(bignum_fromstring('10'), bignum_fromstring('11'))));
+	
+	// as of now we support up to 254 digits.
+	num := bignum_fromstring('99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999');	
+	AssertEquals('maxnum - maxnum == 0', '0', bignum_tostring(bignum_subtract(num, num)));
+	num2 := bignum_fromstring('99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999998');
+	AssertEquals('maxnum - (maxnum - 1) == 1', '1', bignum_tostring(bignum_subtract(num, num2)));
+	num := bignum_fromstring('-99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999');
+	AssertEquals('(-maxnum) - (-maxnum) == 0', '0', bignum_tostring(bignum_subtract(num, num)));
 end;
 
 initialization
