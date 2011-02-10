@@ -12,6 +12,7 @@ type
 		Procedure ToStringTest;
 		Procedure FromStringTest;
 		Procedure AdditionTest;
+		Procedure SubtractionTest;
 	end;
 	
 implementation
@@ -58,7 +59,7 @@ begin
 	num.data[1] := 2;
 	num.data[2] := 4;
 	AssertEquals('mainus fourty two', '-42', bignum_tostring(num));
-	
+	// TODO proper tests for limits
 end;
 
 Procedure BigNumTestCase.FromStringTest;
@@ -78,6 +79,8 @@ begin
 	AssertEquals('Number with a zero in the middle', '2132132001223232132111123213213211', bignum_tostring(num));
 	num:=bignum_fromstring('-5');
 	AssertEquals('Tostring-fromstring with negative numbers.','-5',bignum_tostring(num));
+	AssertEquals('negative large number', bignum_tostring(bignum_fromstring('-2134343578439758437589743957439578437598437574385743957843')), '-2134343578439758437589743957439578437598437574385743957843');
+	// TODO proper tests for limits
 end;
 
 Procedure BigNumTestCase.AdditionTest;
@@ -108,6 +111,17 @@ begin
 	AssertEquals('Adding positive and negative numbers. Part 3.','-3',bignum_tostring(bignum_add(num2, num)));
 	
 	AssertEquals('<Hugenum> + <Hugenum>.', '109999999999999999999999999999999999999999990', bignum_tostring(bignum_add(bignum_fromstring('9999999999999999999999999999999999999999999'), bignum_fromstring('99999999999999999999999999999999999999999991'))));
+end;
+
+Procedure BigNumTestCase.SubtractionTest;
+var
+	num: BigNumType;
+begin
+	AssertEquals('1 - 1 == 0', '0', bignum_tostring(bignum_subtract(bignum_fromstring('1'), bignum_fromstring('1'))));
+	AssertEquals('(-1) - (-1) == 0', '0', bignum_tostring(bignum_subtract(bignum_fromstring('-1'), bignum_fromstring('-1'))));
+	AssertEquals('2 - 1 == 1', '1', bignum_tostring(bignum_subtract(bignum_fromstring('2'), bignum_fromstring('1'))));
+	AssertEquals('digit carry test: 10 - 1 == 9', '9', bignum_tostring(bignum_subtract(bignum_fromstring('10'), bignum_fromstring('1'))));
+	AssertEquals('global carry 2 - 3 == -1', '-1', bignum_tostring(bignum_subtract(bignum_fromstring('2'), bignum_fromstring('3'))));
 end;
 
 initialization

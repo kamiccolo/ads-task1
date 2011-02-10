@@ -52,6 +52,10 @@ begin
 			res := res + chr(ord('0') + num.data[i]);
 		end;
 	end;
+	
+	if found_num and (not num.positive) then
+		res := '-' + res;
+	
 	bignum_tostring := res;
 end;
 
@@ -66,7 +70,9 @@ begin
 		begin
 			if (str[i] >= '0') and (str[i] <= '9') then
 				num.data[length(str) - i + 1] := ord(str[i]) - ord('0')
-			else (if str[i] = '-') then
+			else if (str[i] = '-') then
+				num.positive := false
+			else
 				num.data[length(str) - i + 1] := 0;
 		end;
 	
@@ -113,6 +119,7 @@ end;
 function bignum_subtract(a, b: BigNumType): BigNumType;
 var
 	carry: Byte;
+	tmp: Integer;
 	i: Integer;
 	res: BigNumType;
 begin
@@ -122,17 +129,24 @@ begin
 	begin
 		for i := 1 to BIGNUM_DIGITS do
 		begin
-			res[i] := a[i] - b[i] - carry;
-			if res[i] < 0 then
+			tmp := a.data[i] - b.data[i] - carry;
+			if tmp < 0 then
 			begin
-				res[i] := 10 - res[i];
+				res.data[i] := tmp + 10;
 				carry := 1;
-			end 
+			end
 			else
+				res.data[i] := tmp;
 				carry := 0;
-			
 		end;
+	end
+	else
+	begin
+		
 	end;
+	
+	
+	bignum_subtract := res;
 end;
 
 initialization
