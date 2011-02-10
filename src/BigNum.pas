@@ -18,11 +18,11 @@ type
 
 	Function bignum_subtract(a, b: BigNumType): BigNumType;
 	
-	// behaves like C style compare: returns 0 if equal, -1 if a < b and 1 if a > b
+	// behaves like a C style compare: returns 0 if equal, -1 if a < b and 1 if a > b
 	Function bignum_compare(a, b: BigNumType): Integer;
 
-	Function bignum_divide(a, b: BigNumType): BigNumType;
-{	Function bignum_remainder(a, b: BigNumType): BigNumType; }
+	Function bignum_div(a, b: BigNumType): BigNumType;
+	Function bignum_mod(a, b: BigNumType): BigNumType; 
 
 	Function bignum_add(a, b: BigNumType): BigNumType;
 
@@ -230,14 +230,29 @@ begin
 	shift_right := a;
 end;
 
-Function bignum_divide(a, b: BigNumType): BigNumType;
+Function bn_abs(a: BigNumType): BigNumType;
+begin
+	a.positive := True;
+	bn_abs := a;
+end;
+
+Function divide_internal(a, b: BigNumType; remainder: Boolean): BigNumType;
 var
 	digit_dif: Integer;
 	i: Integer;
 	res, ONE: BigNumType;
+	positive: Boolean;
 begin
-	if bignum_compare(a, b) < 0 then
-		bignum_divide := bignum_fromstring('0')
+	if bignum_compare(b, bignum_fromstring('0')) = 0 then
+		divide_internal := bignum_fromstring('0')
+	else
+	if bignum_compare(bn_abs(a), bn_abs(b)) < 0 then
+	begin
+		if remainder then
+			divide_internal := a
+		else
+			divide_internal := bignum_fromstring('0');
+	end
 	else
 	begin
 		ONE := bignum_fromstring('1');
@@ -250,7 +265,12 @@ begin
 		end;
 		
 		bignum_init(res);
-		res.positive := (a.positive = b.positive);
+		if remainder then // when doing mod with negative divisors, Pascal uses sign of dividend for the resulting sign
+			positive := (a.positive = b.positive) or a.positive
+		else
+			positive := (a.positive = b.positive);
+		a := bn_abs(a);
+		b := bn_abs(b);
 		
 		for i := 0 to digit_dif do
 		begin
@@ -262,10 +282,29 @@ begin
 			end;
 			b := shift_right(b);
 		end;
-		bignum_divide := res;
+		
+		if remainder then
+		begin
+			a.positive := positive;
+			divide_internal := a;
+		end
+		else
+		begin
+			res.positive := positive;
+			divide_internal := res;
+		end;
 	end;
 end;
 
+Function bignum_div(a, b: BigNumType): BigNumType;
+begin
+	bignum_div := divide_internal(a, b, false);
+end;
+
+Function bignum_mod(a, b: BigNumType): BigNumType; 
+begin
+	bignum_mod := divide_internal(a, b, true);
+end;
 initialization
 
 end.
