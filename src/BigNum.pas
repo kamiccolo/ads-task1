@@ -3,7 +3,7 @@ unit BigNum;
 interface
 
 const
-	BIGNUM_DIGITS = 256;
+	BIGNUM_DIGITS = 254;
 
 type
 	BigNumType = record
@@ -43,10 +43,8 @@ var
 begin
 	found_num := false;
 	res := '';
-
 	for i := BIGNUM_DIGITS downto 1 do 
-	begintmp:=a;
-
+	begin
 		if (not found_num) and (num.data[i] <> 0) then
 			found_num := true;
 		if (found_num) or (i = 1) then
@@ -103,7 +101,7 @@ begin
 			b:=tmp;
 		end;
 		
-		for i:=1 to 256 do
+		for i:=1 to BIGNUM_DIGITS do
 			begin
 			if (i<>1) then
 			begin
@@ -149,7 +147,7 @@ begin
 	end
 	else
 	begin  //adding numbers with same signs
-		for i:=1 to 256 do
+		for i:=1 to BIGNUM_DIGITS do
 		begin
 			buf:=a.data[i]+b.data[i];
 			if (af=true) then
@@ -167,36 +165,9 @@ begin
 end;
 
 function bignum_subtract(a, b: BigNumType): BigNumType;
-var
-	carry: Byte;
-	tmp: Integer;
-	i: Integer;
-	res: BigNumType;
 begin
-	bignum_init(res);
-	carry := 0;
-	if (a.positive = a.positive) then
-	begin
-		for i := 1 to BIGNUM_DIGITS do
-		begin
-			tmp := a.data[i] - b.data[i] - carry;
-			if tmp < 0 then
-			begin
-				res.data[i] := tmp + 10;
-				carry := 1;
-			end
-			else
-				res.data[i] := tmp;
-				carry := 0;
-		end;
-	end
-	else
-	begin
-		
-	end;
-	
-	
-	bignum_subtract := res;
+	b.positive := not b.positive;
+	bignum_subtract := bignum_add(a, b);
 end;
 
 initialization

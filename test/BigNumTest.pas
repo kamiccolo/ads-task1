@@ -94,7 +94,7 @@ begin
 	AssertEquals('0+0 == 0', '0', bignum_tostring(bignum_add(bignum_fromstring('0'), bignum_fromstring('0'))));
 	AssertEquals('1+0 == 1.', '1', bignum_tostring(bignum_add(bignum_fromstring('1'), bignum_fromstring('0'))));
 	AssertEquals('1+0 == 1.', '1', bignum_tostring(bignum_add(bignum_fromstring('1'), bignum_fromstring('0'))));
-	for i:=1 to 256 do num.data[i]:=9;
+	for i:=1 to BIGNUM_DIGITS do num.data[i]:=9;
 	num2:=bignum_fromstring('1');
 	AssertEquals('Adding biggest possible number with 1, (causing an overflow).','0',bignum_tostring(bignum_add(num, num2)));
 	AssertEquals('Adding biggest possible number with 1, (causing an overflow). Part 2.','0',bignum_tostring(bignum_add(bignum_fromstring(bignum_tostring(num)), num2)));
