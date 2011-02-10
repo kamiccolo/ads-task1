@@ -10,18 +10,20 @@ type
 		data: array [1..BIGNUM_DIGITS] of Byte; // or some arbitrary large number
 		positive: Boolean;
 	end;
-	
+
 	procedure bignum_init(var num: BigNumType);
 	
 	function bignum_tostring(num: BigNumType): string;
 	function bignum_fromstring(str: string): BigNumType;
 
 	function bignum_subtract(a, b: BigNumType): BigNumType;
-{	
+	
+	// behaves like C style compare: returns 0 if equal, -1 if a < b and 1 if a > b
+	function bignum_compare(a, b: BigNumType): Integer;
+{
 	function bignum_divide(a, b: BigNumType): BigNumType;
 	function bignum_remainder(a, b: BigNumType): BigNumType;
 }
-	
 	function bignum_add(a, b: BigNumType): BigNumType;
 
 implementation
@@ -65,7 +67,9 @@ var
 	num: BigNumType;
 begin
 	bignum_init(num);
-	if length(str) <= BIGNUM_DIGITS then
+	
+	if (length(str) <= BIGNUM_DIGITS) or ((length(str) = (BIGNUM_DIGITS+1)) and (str[1] = '-')) then
+	begin	
 		for i := length(str) downto 1 do
 		begin
 			if (str[i] >= '0') and (str[i] <= '9') then
@@ -75,8 +79,35 @@ begin
 			else
 				num.data[length(str) - i + 1] := 0;
 		end;
-	
+	end;
 	bignum_fromstring := num;
+end;
+
+function bignum_compare(a, b: BigNumType): Integer;
+var
+	i: Integer;
+begin
+	if a.positive <> b.positive then
+	begin
+		if a.positive then
+			bignum_compare := 1
+		else
+			bignum_compare := -1;
+	end
+	else
+	begin
+		i := BIGNUM_DIGITS;
+		while (i > 1) and (a.data[i] = b.data[i]) do
+			i := i - 1;
+		
+		if a.data[i] > b.data[i] then
+			bignum_compare := 1
+		else
+		if a.data[i] < b.data[i] then
+			bignum_compare := -1
+		else
+			bignum_compare := 0;
+	end;
 end;
 
 function bignum_add(a, b: BigNumType): BigNumType;
