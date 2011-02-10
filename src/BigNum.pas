@@ -11,24 +11,24 @@ type
 		positive: Boolean;
 	end;
 
-	procedure bignum_init(var num: BigNumType);
+	Procedure bignum_init(var num: BigNumType);
 	
-	function bignum_tostring(num: BigNumType): string;
-	function bignum_fromstring(str: string): BigNumType;
+	Function bignum_tostring(num: BigNumType): string;
+	Function bignum_fromstring(str: string): BigNumType;
 
-	function bignum_subtract(a, b: BigNumType): BigNumType;
+	Function bignum_subtract(a, b: BigNumType): BigNumType;
 	
 	// behaves like C style compare: returns 0 if equal, -1 if a < b and 1 if a > b
-	function bignum_compare(a, b: BigNumType): Integer;
-{
-	function bignum_divide(a, b: BigNumType): BigNumType;
-	function bignum_remainder(a, b: BigNumType): BigNumType;
-}
-	function bignum_add(a, b: BigNumType): BigNumType;
+	Function bignum_compare(a, b: BigNumType): Integer;
+
+	Function bignum_divide(a, b: BigNumType): BigNumType;
+{	Function bignum_remainder(a, b: BigNumType): BigNumType; }
+
+	Function bignum_add(a, b: BigNumType): BigNumType;
 
 implementation
 
-procedure bignum_init(var num: BigNumType);
+Procedure bignum_init(var num: BigNumType);
 var
 	i: Integer;
 begin
@@ -37,7 +37,7 @@ begin
 		num.positive := true;
 end;
 
-function bignum_tostring(num: BigNumType): string;
+Function bignum_tostring(num: BigNumType): string;
 var
 	i: Integer;
 	found_num: Boolean;
@@ -61,13 +61,12 @@ begin
 	bignum_tostring := res;
 end;
 
-function bignum_fromstring(str: string): BigNumType;
+Function bignum_fromstring(str: string): BigNumType;
 var
 	i: Integer;
 	num: BigNumType;
 begin
 	bignum_init(num);
-	
 	if (length(str) <= BIGNUM_DIGITS) or ((length(str) = (BIGNUM_DIGITS+1)) and (str[1] = '-')) then
 	begin	
 		for i := length(str) downto 1 do
@@ -83,7 +82,7 @@ begin
 	bignum_fromstring := num;
 end;
 
-function bignum_compare(a, b: BigNumType): Integer;
+Function bignum_compare(a, b: BigNumType): Integer;
 var
 	i: Integer;
 begin
@@ -110,7 +109,7 @@ begin
 	end;
 end;
 
-function bignum_add(a, b: BigNumType): BigNumType;
+Function bignum_add(a, b: BigNumType): BigNumType;
 var
 	cf, af: Boolean;
 	i: integer;
@@ -195,10 +194,75 @@ begin
 	bignum_add:=sum;
 end;
 
-function bignum_subtract(a, b: BigNumType): BigNumType;
+Function bignum_subtract(a, b: BigNumType): BigNumType;
 begin
 	b.positive := not b.positive;
 	bignum_subtract := bignum_add(a, b);
+end;
+
+Function digit_count(a: BigNumType): Integer;
+var
+	i: Integer;
+begin
+	i := BIGNUM_DIGITS;
+	while (i <> 1) and (a.data[i] = 0) do
+		i := i - 1;
+	digit_count := i;
+end;
+
+Function shift_left(a: BigNumType): BigNumType;
+var
+	i: Integer;
+begin
+	for i := BIGNUM_DIGITS downto 2 do
+		a.data[i] := a.data[i-1];
+	a.data[1] := 0;
+	shift_left := a;
+end;
+
+Function shift_right(a: BigNumType): BigNumType;
+var
+	i: Integer;
+begin
+	for i := 1 to (BIGNUM_DIGITS-1) do
+		a.data[i] := a.data[i+1];
+	a.data[BIGNUM_DIGITS] := 0;
+	shift_right := a;
+end;
+
+Function bignum_divide(a, b: BigNumType): BigNumType;
+var
+	digit_dif: Integer;
+	i: Integer;
+	res: BigNumType;
+begin
+	if bignum_compare(a, b) < 0 then
+		bignum_divide := bignum_fromstring('0')
+	else
+	begin
+		digit_dif := digit_count(a) - digit_count(b);
+		i := 0;
+		while i < digit_dif do
+		begin
+			b := shift_left(b);
+			i := i + 1;
+		end;
+		
+		bignum_init(res);
+		res.positive := (a.positive = b.positive);
+		
+		for i := 0 to digit_dif do
+		begin
+			res := shift_left(res);
+			while bignum_compare(a, b) >= 0 do
+			begin
+				a := bignum_subtract(a, b);
+				res := bignum_add(res, ONE);
+			end;
+			b := shift_right(b);
+		end;
+		bignum_divide := res;
+	end;
 end;
 
 initialization

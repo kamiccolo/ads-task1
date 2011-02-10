@@ -13,7 +13,9 @@ type
 		Procedure FromStringTest;
 		Procedure AdditionTest;
 		Procedure SubtractionTest;
-		Procedure CompareTest;
+		Procedure ComparisonTest;
+		Procedure DivisionTest;
+		Procedure RemainderTest;
 	end;
 	
 implementation
@@ -23,8 +25,8 @@ var
 	num: BigNumType;
 begin
 	bignum_init(num);
-	AssertEquals('BigNum should be initialized to zero.',bignum_tostring(num),'0');
-	AssertEquals('BigNumType.positive should be initialized to 1.',num.positive,true);
+	AssertEquals('BigNum should be initialized to zero.', '0', bignum_tostring(num));
+	AssertEquals('BigNumType.positive should be initialized to 1.',true ,num.positive);
 	
 end;
 
@@ -140,7 +142,7 @@ begin
 	AssertEquals('(-maxnum) - (-maxnum) == 0', '0', bignum_tostring(bignum_subtract(num, num)));
 end;
 
-Procedure BigNumTestCase.CompareTest;
+Procedure BigNumTestCase.ComparisonTest;
 var
 	n1, n2: BigNumType;
 begin
@@ -154,7 +156,6 @@ begin
 	n1 := bignum_fromstring('99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999');	
 	AssertEquals('maxnum == maxnum', 0, bignum_compare(n1, n1));
 	
-	
 	AssertEquals('1 > 0', 1, bignum_compare(bignum_fromstring('1'), bignum_fromstring('0')));
 	AssertEquals('1 > -1', 1, bignum_compare(bignum_fromstring('1'), bignum_fromstring('-1')));
 	AssertEquals('-1 < 1', -1, bignum_compare(bignum_fromstring('-1'), bignum_fromstring('1')));
@@ -165,6 +166,30 @@ begin
 	n2 := bignum_fromstring('99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999998');	
 	
 	AssertEquals('maxnum -1 < maxnum', -1, bignum_compare(n2, n1));
+	AssertEquals('maxnum > maxnum-1', 1, bignum_compare(n1, n2));
+	
+	n2 := bignum_fromstring('19999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999');	
+	
+	AssertEquals('almost maxnum < maxnum', -1, bignum_compare(n2, n1));
+	AssertEquals('maxnum > almost maxnum', 1, bignum_compare(n1, n2));
+end;
+
+Procedure BigNumTestCase.DivisionTest;
+begin
+	AssertEquals('4 / 2 == 2', '2', bignum_tostring(bignum_divide(bignum_fromstring('4'), bignum_fromstring('2'))));
+	AssertEquals('5 / 2 == 2', '2', bignum_tostring(bignum_divide(bignum_fromstring('5'), bignum_fromstring('2'))));
+	AssertEquals('2 / 3 == 2', '0', bignum_tostring(bignum_divide(bignum_fromstring('2'), bignum_fromstring('3'))));
+	AssertEquals('12 / 2 == 2', '6', bignum_tostring(bignum_divide(bignum_fromstring('12'), bignum_fromstring('2'))));
+	AssertEquals('12 / 2 == 2', '6', bignum_tostring(bignum_divide(bignum_fromstring('12'), bignum_fromstring('2'))));
+	
+	// Limits
+	AssertEquals('maxnum / maxnum == 1', '1', bignum_tostring(bignum_divide(bignum_fromstring('99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999'), bignum_fromstring('99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999'))));
+	AssertEquals('maxnum / (maxnum/10) == 1', '10', bignum_tostring(bignum_divide(bignum_fromstring('99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999'), bignum_fromstring('9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999'))));
+end;
+
+Procedure BigNumTestCase.RemainderTest;
+begin
+	Fail('not implemented!');
 end;
 
 initialization
