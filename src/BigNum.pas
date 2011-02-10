@@ -234,12 +234,13 @@ Function bignum_divide(a, b: BigNumType): BigNumType;
 var
 	digit_dif: Integer;
 	i: Integer;
-	res: BigNumType;
+	res, ONE: BigNumType;
 begin
 	if bignum_compare(a, b) < 0 then
 		bignum_divide := bignum_fromstring('0')
 	else
 	begin
+		ONE := bignum_fromstring('1');
 		digit_dif := digit_count(a) - digit_count(b);
 		i := 0;
 		while i < digit_dif do
