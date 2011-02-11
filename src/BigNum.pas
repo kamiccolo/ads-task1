@@ -26,8 +26,6 @@ type
 
 	Function bignum_add(a, b: BigNumType): BigNumType;
 	Function bignum_mul(a, b: BigNumType): BigNumType;
-	Function digit_count(a: BigNumType): Integer;
-	Function shift_left(a: BigNumType): BigNumType;
 
 implementation
 
