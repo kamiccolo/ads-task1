@@ -16,6 +16,7 @@ type
 		Procedure ComparisonTest;
 		Procedure DivisionTest;
 		Procedure RemainderTest;
+		Procedure MultiplyTest;
 	end;
 	
 implementation
@@ -213,6 +214,43 @@ begin
 	AssertEquals('-5 / 2 == -1', '-1', bignum_tostring(bignum_mod(bignum_fromstring('-5'), bignum_fromstring('2'))));
 	AssertEquals('4 / -5 == 4', '4', bignum_tostring(bignum_mod(bignum_fromstring('4'), bignum_fromstring('-5'))));
 end;
+
+Procedure BigNumTestCase.MultiplyTest;
+var
+	a, b: BigNumType;
+begin
+	a:=bignum_fromstring('2');
+	a:=bignum_mul(a,a);
+	AssertEquals('2*2 == 4', '4', bignum_tostring(a));
+	
+	a:=bignum_fromstring('2');
+	b:=bignum_fromstring('-2');
+	a:=bignum_mul(a,b);
+	AssertEquals('2*(-2) == -4', '-4', bignum_tostring(a));
+	
+	a:=bignum_fromstring('2000');
+	b:=bignum_fromstring('-2');
+	a:=bignum_mul(a,b);
+	AssertEquals('2000*(-2) == -4', '-4000', bignum_tostring(a));
+	
+	a:=bignum_fromstring('2000');
+	b:=bignum_fromstring('-2');
+	a:=bignum_mul(b,a);
+	AssertEquals('(-2)*2000 == -4', '-4000', bignum_tostring(a));
+	
+	a:=bignum_fromstring('2000');
+	b:=bignum_fromstring('0');
+	AssertEquals('2000*0=0', '0', bignum_tostring(bignum_mul(a,b)));
+	
+	a:=bignum_fromstring('99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999');
+	b:=bignum_fromstring('0');
+	AssertEquals('[huge]*0=0', '0', bignum_tostring(bignum_mul(a,b)));
+	
+		a:=bignum_fromstring('25000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000');
+	b:=bignum_fromstring('4');
+	AssertEquals('[huge] multiplication overflow', '0', bignum_tostring(bignum_mul(a,b)));
+end;
+
 
 initialization
 	RegisterTest(BigNumTestCase);

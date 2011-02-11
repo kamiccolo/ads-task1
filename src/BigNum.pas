@@ -25,6 +25,7 @@ type
 	Function bignum_mod(a, b: BigNumType): BigNumType; 
 
 	Function bignum_add(a, b: BigNumType): BigNumType;
+	Function bignum_mul(a, b: BigNumType): BigNumType;
 
 implementation
 
@@ -304,6 +305,44 @@ end;
 Function bignum_mod(a, b: BigNumType): BigNumType; 
 begin
 	bignum_mod := divide_internal(a, b, true);
+end;
+
+Function bignum_mul(a, b: BigNumType): BigNumType;
+var
+	i, j, k, carry, buf: Byte;
+	res, tmp: BigNumType;
+	adigit, bdigit: Integer;
+begin
+	adigit:=digit_count(a);
+	bdigit:=digit_count(b);
+	bignum_init(res);
+	tmp:=res;
+	carry:=0;
+	
+	for i:=1 to bdigit do
+	begin
+		for j:=1 to adigit do
+		begin
+			buf:=a.data[j]*b.data[i];
+			if(carry<>0) then
+			begin
+				buf:=buf+carry;
+			end;
+			if(buf>9) then
+			begin
+				carry:=buf div 10;
+				buf:=buf mod 10;
+			end
+			else carry:=0;
+			tmp.data[j]:=buf;
+		end;
+		if (carry<>0) and (BIGNUM_DIGITS>j) then tmp.data[j+1]:=carry;
+		for k:=2 to i do tmp:=shift_left(tmp);
+		res:=bignum_add(res, tmp);
+	end;
+	if (a.positive xor b.positive) then res.positive:=false
+	else tmp.positive:=true;
+	bignum_mul:=res;
 end;
 initialization
 
