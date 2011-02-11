@@ -336,7 +336,7 @@ begin
 			else carry:=0;
 			tmp.data[j]:=buf;
 		end;
-		if carry<>0 then tmp.data[j+1]:=carry;
+		if (carry<>0) and (BIGNUM_DIGITS>j) then tmp.data[j+1]:=carry;
 		for k:=2 to i do tmp:=shift_left(tmp);
 		res:=bignum_add(res, tmp);
 	end;
