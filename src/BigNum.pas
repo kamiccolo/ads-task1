@@ -239,7 +239,7 @@ end;
 
 Function divide_internal(a, b: BigNumType; remainder: Boolean): BigNumType;
 var
-	digit_dif: Integer;
+	digit_diff: Integer;
 	i: Integer;
 	res, ONE: BigNumType;
 	positive: Boolean;
@@ -257,23 +257,23 @@ begin
 	else
 	begin
 		ONE := bignum_fromstring('1');
-		digit_dif := digit_count(a) - digit_count(b);
+		digit_diff := digit_count(a) - digit_count(b);
 		i := 0;
-		while i < digit_dif do
+		while i < digit_diff do
 		begin
 			b := shift_left(b);
 			i := i + 1;
 		end;
 		
 		bignum_init(res);
-		if remainder then // when doing mod with negative divisors, Pascal uses sign of dividend for the resulting sign
+		if remainder then // when doing mod with negative numbers, Pascal uses sign of the dividend for the resulting sign
 			positive := (a.positive = b.positive) or a.positive
 		else
 			positive := (a.positive = b.positive);
 		a := bn_abs(a);
 		b := bn_abs(b);
 		
-		for i := 0 to digit_dif do
+		for i := 0 to digit_diff do
 		begin
 			res := shift_left(res);
 			while bignum_compare(a, b) >= 0 do
@@ -317,10 +317,12 @@ begin
 	bdigit:=digit_count(b);
 	bignum_init(res);
 	tmp:=res;
-	carry:=0;
+	
 	
 	for i:=1 to bdigit do
 	begin
+		carry:=0;
+		bignum_init(tmp);
 		for j:=1 to adigit do
 		begin
 			buf:=a.data[j]*b.data[i];
@@ -344,6 +346,7 @@ begin
 	else tmp.positive:=true;
 	bignum_mul:=res;
 end;
+
 initialization
 
 end.
