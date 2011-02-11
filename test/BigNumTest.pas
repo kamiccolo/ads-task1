@@ -194,6 +194,7 @@ begin
 	// Negative numbers
 	AssertEquals('-4 / 2 == -2', '-2', bignum_tostring(bignum_div(bignum_fromstring('-4'), bignum_fromstring('2'))));
 	AssertEquals('4 / -2 == -2', '-2', bignum_tostring(bignum_div(bignum_fromstring('4'), bignum_fromstring('-2'))));
+	AssertEquals('-4 / -2 == 2', '2', bignum_tostring(bignum_div(bignum_fromstring('-4'), bignum_fromstring('-2'))));
 end;
 
 Procedure BigNumTestCase.RemainderTest;
